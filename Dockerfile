@@ -29,6 +29,7 @@ COPY --chown=${NB_USER}:${NB_USER} CHANGELOG.md CHANGELOG.md
 COPY --chown=${NB_USER}:${NB_USER} logger_config.yaml logger_config.yaml
 COPY --chown=${NB_USER}:${NB_USER} exploration-notebooks exploration-notebooks
 COPY --chown=${NB_USER}:${NB_USER} scripts/app-start.sh scripts/app-start.sh
+COPY --chown=${NB_USER}:${NB_USER} prepline_general/ prepline_general/
 
 # Usar script de arranque que descargará modelos al inicio (runtime, no en build)
 # Esto reduce el peso de la imagen y evita timeouts
