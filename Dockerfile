@@ -7,7 +7,7 @@ ARG NB_USER=notebook-user
 ARG NB_UID=1000
 ARG PIP_VERSION
 ARG PIPELINE_PACKAGE
-ARG PYTHON_VERSION="3.12"
+ARG PYTHON_VERSION="3.12.9"
 
 ENV PYTHON python${PYTHON_VERSION}
 ENV PIP ${PYTHON} -m pip
@@ -20,7 +20,7 @@ USER ${NB_USER}
 # Etapa para instalar dependencias de Python
 FROM base as python-deps
 COPY --chown=${NB_USER}:${NB_USER} requirements/base.txt requirements-base.txt
-RUN ${PIP} install --upgrade pip==${PIP_VERSION} \
+RUN ${PIP} install --upgrade pip \
  && ${PIP} install --no-cache -r requirements-base.txt
 
 # Etapa de código y configuración
