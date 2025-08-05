@@ -9,6 +9,12 @@ GRACEFUL_SHUTDOWN_PERIOD_SECONDS=3600
 TIMEOUT_COMMAND='timeout'
 OPTIONAL_TIMEOUT=''
 
+# Descargar modelos y paquetes al inicio (evita hacerlo en build para reducir peso/tiempo)
+echo "Downloading NLTK packages and initializing models..."
+python3 -c "from unstructured.nlp.tokenize import download_nltk_packages; download_nltk_packages()" || true
+python3 -c "from unstructured.partition.model_init import initialize; initialize()" || true
+
+# Configuración de tiempo máximo de vida si está habilitada
 if [[ -n $MAX_LIFETIME_SECONDS ]]; then
     if ! command -v $TIMEOUT_COMMAND &> /dev/null; then
         TIMEOUT_COMMAND='gtimeout'
@@ -23,12 +29,14 @@ if [[ -n $MAX_LIFETIME_SECONDS ]]; then
     fi
 fi
 
+# Lanzar servidor con uvicorn usando el puerto asignado por Railway
 ${OPTIONAL_TIMEOUT} \
     uvicorn prepline_general.api.app:app \
     --log-config logger_config.yaml \
     --host "$HOST" \
     --port "$PORT" \
-    --workers "$WORKERS" \
+    --workers "$WORKERS"
 
 echo "Server was shutdown"
 [ -n "$MAX_LIFETIME_SECONDS" ] && echo "Reached timeout of $MAX_LIFETIME_SECONDS seconds"
+
